@@ -30,6 +30,30 @@ router.post("/", (req, res) => {
   });
 });
 
-// route GET/tweets/ that
+// route GET/tweets/ that returns all tweets in db, sorted desc to asc
+router.get("/", (req, res) => {
+  Tweet.find({})
+    .populate("author")
+    .populate("likeBy")
+    .then((dbData) => {
+      //   console.log(data);
+      let result = [];
+      result = dbData.map((tweet) => {
+        const tweetObj = {
+          tweet_id: tweet._id,
+          text: tweet.text,
+          date: tweet.date,
+          authorUsername: tweet.author.username,
+          authorFirstname: tweet.author.firstname,
+          likeCount: tweet.likeBy.length,
+        };
+        return tweetObj;
+      });
+      result.sort((a, b) => b.date - a.date);
+      res.json({ result: result });
+    });
+});
+
+//
 
 module.exports = router;
