@@ -34,6 +34,7 @@ router.post("/signup", (req, res) => {
           token: newDoc.token,
           username: newDoc.username,
           firstname: newDoc.firstname,
+          id:newDoc._id,
         });
       });
     } else {
@@ -56,6 +57,8 @@ router.post("/signin", (req, res) => {
         token: data.token,
         username: data.username,
         firstname: data.firstname,
+        id:data.id,
+      
       });
     } else {
       res.json({ result: false, error: "User not found or wrong password" });
