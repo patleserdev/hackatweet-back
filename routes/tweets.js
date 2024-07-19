@@ -63,7 +63,7 @@ router.get("/", (req, res) => {
 });
 
 // route PUT/tweets/:id with req.body.token that likes or dislikes a tweet, returns the likeCount updated?
-router.put("/:id", (req, res) => {
+router.put("/:token/:id", (req, res) => {
   const id = req.params.id;
   // if missing token in body
   if (!checkBody(req.body, ["token"])) {
@@ -72,7 +72,7 @@ router.put("/:id", (req, res) => {
   }
   // find the user_id to add to array likeBy
   let user_id;
-  User.findOne({ token: req.body.token }).then((userData) => {
+  User.findOne({ token: req.params.token }).then((userData) => {
     if (userData) {
       user_id = userData._id.toHexString();
       console.log(user_id);
