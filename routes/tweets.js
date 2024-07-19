@@ -76,7 +76,15 @@ router.put("/:id", (req, res) => {
     }
   });
   //   find the tweet and either add or remove user_id to the list
-  // attention : a debug, il y a des erreurs
+  // ATTENTION : a debug, il y a des erreurs
+
+  // .__           .__
+  // |  |__   ____ |  | ______     __________  ______
+  // |  |  \_/ __ \|  | \____ \   /  ___/  _ \/  ___/
+  // |   Y  \  ___/|  |_|  |_> >  \___ (  <_> )___ \
+  // |___|  /\___  >____/   __/  /____  >____/____  >
+  //      \/     \/     |__|          \/          \/
+
   Tweet.findById(id).then((data) => {
     if (data.likeBy.some((e) => e === user_id)) {
       Tweet.updateOne({ _id: id }, { $pull: { likeBy: user_id } }).then(
@@ -103,13 +111,5 @@ router.put("/:id", (req, res) => {
     }
   });
 });
-
-// .then((tweetData) => {
-//     tweetData.likeBy.push(user_id);
-//     //   console.log(tweetData.likeBy);
-//     console.log(tweetData.likeBy);
-//     res.json({ result: tweetData });
-
-//   console.log(mongoose.Types.ObjectId.isValid(user_id));
 
 module.exports = router;
