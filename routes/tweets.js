@@ -10,24 +10,28 @@ const { checkBody } = require("../modules/checkBody");
 
 // route POST/tweets/ that create a new tweet in db and returns tweet_id
 router.post("/", (req, res) => {
-  if (!checkBody(req.body, ["text", "token"])) {
+  if (!checkBody(req.body, ["text", "token","trends"])) {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
   //look up the user_id based on the token in request body
   User.findOne({ token: req.body.token }).then((data) => {
-    if (data) {
+    // console.log(data)
+    if (data != null) {
       console.log(data);
       const newTweet = new Tweet({
         text: req.body.text,
         date: Date.now(),
         author: data._id,
         likeBy: [],
+        trends: req.body.trends
       });
       newTweet.save().then((newDoc) => {
         res.json({ result: true, token: data.token, tweet_id: newDoc._id });
       });
-    } else ({ result: false, error: "No token match" });
+    } 
+    else 
+    ({ result: false, error: "No token match" });
   });
 });
 
@@ -47,6 +51,8 @@ router.get("/", (req, res) => {
           authorUsername: tweet.author.username,
           authorFirstname: tweet.author.firstname,
           likeCount: tweet.likeBy.length,
+          likeBy: tweet.likeBy,
+          trends:tweet.trends
         };
         return tweetObj;
       });
@@ -111,5 +117,39 @@ router.put("/:id", (req, res) => {
 //     res.json({ result: tweetData });
 
 //   console.log(mongoose.Types.ObjectId.isValid(user_id));
+
+/**
+ *  Route Delete 
+ *  only creator can delete the tweet
+ *  properties : user token and tweet id
+ */
+
+router.delete("/:token/:id", (req, res) => {
+
+  // confirm user
+  User.findOne({ token: req.params.token }).then((userData) => {
+    if (userData) {
+      user_id = userData._id.toHexString();
+     
+        Tweet.deleteOne({ _id: req.params.id })
+        .then((data) => {
+          if (data.deletedCount > 0) {
+            res.json({ result: true, message: `Tweet deleted` });
+
+          } else {
+            res.json({ result: false, error: "No tweet to delete" });
+            return;
+          }
+        }); 
+      
+    }
+    else 
+    {
+      res.json({ result: false, error: "No token match" });
+      return;
+    }
+  }); 
+
+})
 
 module.exports = router;
