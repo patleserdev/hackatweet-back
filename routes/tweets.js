@@ -42,16 +42,19 @@ router.get("/", (req, res) => {
       //   console.log(data);
       let result = [];
       result = dbData.map((tweet) => {
+        // console.log(tweet);
         const tweetObj = {
           tweet_id: tweet._id,
           text: tweet.text,
           date: tweet.date,
           authorUsername: tweet.author.username,
           authorFirstname: tweet.author.firstname,
+          authorId: tweet.author._id.toHexString(),
           likeCount: tweet.likeBy.length,
           likeBy: tweet.likeBy,
           trends: tweet.trends,
         };
+        console.log(tweetObj);
         return tweetObj;
       });
       result.sort((a, b) => b.date - a.date);
