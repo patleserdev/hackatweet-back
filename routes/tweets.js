@@ -88,7 +88,7 @@ router.put("/:id", (req, res) => {
     if (data.likeBy.some((e) => e === user_id)) {
       Tweet.updateOne({ _id: id }, { $pull: { likeBy: user_id } }).then(
         (data) => {
-          //   console.log(data);
+          console.log(data);
           if (data.modifiedCount > 0) {
             res.json({ result: true, action: "removed" });
           } else {
